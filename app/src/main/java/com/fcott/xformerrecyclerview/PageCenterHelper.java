@@ -1,6 +1,5 @@
 package com.fcott.xformerrecyclerview;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,8 +24,10 @@ public class PageCenterHelper {
         parent = viewGroup;
     }
 
-    public static void onBindViewHolder(View itemView, final int position, int itemCount) {
+    public static void onBindViewHolder(final View itemView, final int position, int itemCount) {
+
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
+
 
         if (!hasInitNormalMargin) {
             hasInitNormalMargin = true;

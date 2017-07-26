@@ -3,9 +3,7 @@ package com.fcott.xformerrecyclerview;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -16,13 +14,8 @@ import com.fcott.xformerrecyclerview.transformer.PageTransformer;
  */
 public class XformerRecyclerView extends RecyclerView {
     private static final int FLING_MAX_VELOCITY = 8000; // 默认最大瞬时滑动速度
-    public enum FLING_MODE{
-        SCROLL, //滑动一次 持续滚动
-        ONEPAGE //滑动一次 滚动一页
-    }
 
     private FixLinearSnapHelper mLinearSnapHelper = new FixLinearSnapHelper();
-    private SnapHelper pagerSnapHelper = new PagerSnapHelper();
     private PageTransformer mPageTransformer;
     private int flingMaxVelocity = FLING_MAX_VELOCITY;
 
@@ -37,18 +30,7 @@ public class XformerRecyclerView extends RecyclerView {
     public XformerRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         super.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-    }
-
-    /**
-     * 设置滚动模式
-     * @param flingMode 滚动模式
-     */
-    public void setFlingMode(FLING_MODE flingMode){
-        if(flingMode == FLING_MODE.ONEPAGE){
-            pagerSnapHelper.attachToRecyclerView(this);
-        }else {
-            mLinearSnapHelper.attachToRecyclerView(this);
-        }
+        mLinearSnapHelper.attachToRecyclerView(this);
     }
 
     /**

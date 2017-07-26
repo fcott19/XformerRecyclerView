@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.fcott.xformerrecyclerview.transformer.RotateDownPageTransformer;
+import com.fcott.xformerrecyclerview.transformer.SnapPageTransformer;
 
 public class MainActivity extends AppCompatActivity {
     private XformerRecyclerView recyclerView;
@@ -19,9 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = (XformerRecyclerView) this.findViewById(R.id.recyclerView);
-        recyclerView.setFlingMode(XformerRecyclerView.FLING_MODE.SCROLL);
         recyclerView.setAdapter(new MyAdapter());
-        recyclerView.setPageTransformer(new RotateDownPageTransformer());
+        recyclerView.setPageTransformer(new SnapPageTransformer());
     }
 
 
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_recycler, parent, false);
-            PageCenterHelper.onCreateViewHolder(parent);
+            PageCenterHelper.onCreateViewHolder(parent);//帮助第一页和最后一页居中
             return new ViewHolder(itemView);
         }
 
