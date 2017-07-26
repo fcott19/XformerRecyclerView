@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.fcott.xformerrecyclerview.transformer.SnapPageTransformer;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
     private XformerRecyclerView recyclerView;
 
     @Override
@@ -29,14 +30,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(MainActivity.this).inflate(R.layout.item_recycler, parent, false);
-            PageCenterHelper.onCreateViewHolder(parent);//帮助第一页和最后一页居中
             return new ViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            PageCenterHelper.onBindViewHolder(holder.itemView, position, getItemCount());//帮助第一页和最后一页居中
             holder.iv.setImageResource(R.mipmap.ic_launcher);
+            PageCenterHelper.onBindViewHolder(holder.itemView, position, getItemCount());//帮助第一页和最后一页居中
         }
 
         @Override

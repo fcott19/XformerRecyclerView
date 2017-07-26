@@ -9,25 +9,19 @@ import android.view.ViewGroup;
  */
 public class PageCenterHelper {
     private static boolean hasInitNormalMargin = false;
-    private static boolean hasInitParent = false;
     private static int normalLeftMargin = 0;
     private static int normalRightMargin = 0;
-    private static ViewGroup parent;
+    protected static int itemWidth = 0;
+    protected static int parentWidth = 0;
 
     private PageCenterHelper() {
 
     }
 
-    public static void onCreateViewHolder(ViewGroup viewGroup) {
-        if (hasInitParent)
-            return;
-        parent = viewGroup;
-    }
-
     public static void onBindViewHolder(final View itemView, final int position, int itemCount) {
-
+        if(itemWidth == 0)
+            return;
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
-
 
         if (!hasInitNormalMargin) {
             hasInitNormalMargin = true;
@@ -36,11 +30,11 @@ public class PageCenterHelper {
         }
 
         if (position == 0) {
-            int leftMargin = (parent.getWidth() - lp.width + normalLeftMargin - lp.rightMargin) / 2 ;
+            int leftMargin = (parentWidth - itemWidth + normalLeftMargin - lp.rightMargin) / 2 ;
             lp.setMargins(leftMargin, lp.topMargin, normalRightMargin, lp.bottomMargin);
             itemView.setLayoutParams(lp);
         } else if (position == itemCount - 1) {
-            int rightMargin = (parent.getWidth() - lp.width + normalRightMargin - lp.leftMargin) / 2 ;;
+            int rightMargin = (parentWidth - itemWidth + normalRightMargin - lp.leftMargin) / 2 ;
             lp.setMargins(normalLeftMargin, lp.topMargin, rightMargin, lp.bottomMargin);
             itemView.setLayoutParams(lp);
         } else {
