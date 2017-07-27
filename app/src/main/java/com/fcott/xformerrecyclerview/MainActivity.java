@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
                         recyclerView.setPageTransformer(new DepthPageTransformer());
                         break;
                 }
-                recyclerView.getAdapter().notifyDataSetChanged();
             }
         });
     }
