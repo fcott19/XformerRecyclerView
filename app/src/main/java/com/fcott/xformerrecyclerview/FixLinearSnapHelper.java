@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by fcott on 2017/7/25.
@@ -70,4 +71,51 @@ public class FixLinearSnapHelper extends LinearSnapHelper {
         return mHorizontalHelper;
     }
 
+    @Override
+    public View findSnapView(RecyclerView.LayoutManager layoutManager) {
+        if (layoutManager.canScrollVertically()) {
+            return findCenterView(layoutManager, getVerticalHelper(layoutManager));
+        } else if (layoutManager.canScrollHorizontally()) {
+            return findCenterView(layoutManager, getHorizontalHelper(layoutManager));
+        }
+        return null;
+    }
+
+    private View findCenterView(RecyclerView.LayoutManager layoutManager,
+                                OrientationHelper helper) {
+        int childCount = layoutManager.getChildCount();
+        if (childCount == 0) {
+            return null;
+        }
+
+        View closestChild = null;
+        final int center;
+        if (layoutManager.getClipToPadding()) {
+            center = helper.getStartAfterPadding() + helper.getTotalSpace() / 2;
+        } else {
+            center = helper.getEnd() / 2;
+        }
+        int absClosest = Integer.MAX_VALUE;
+
+        for (int i = 0; i < childCount; i++) {
+            final View child = layoutManager.getChildAt(i);
+            int childCenter = helper.getDecoratedStart(child) +
+                    (helper.getDecoratedMeasurement(child) / 2);
+            if(i == 0){
+                int margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).getMarginStart();
+                childCenter = helper.getDecoratedStart(child) + margin + (helper.getDecoratedMeasurement(child)-margin)/2;
+            }else if(i == childCount - 1){
+                int margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).getMarginEnd();
+                childCenter = helper.getDecoratedStart(child) + (helper.getDecoratedMeasurement(child)-margin)/2;
+            }
+            int absDistance = Math.abs(childCenter - center);
+
+            /** if child center is closer than previous closest, set it as closest  **/
+            if (absDistance < absClosest) {
+                absClosest = absDistance;
+                closestChild = child;
+            }
+        }
+        return closestChild;
+    }
 }

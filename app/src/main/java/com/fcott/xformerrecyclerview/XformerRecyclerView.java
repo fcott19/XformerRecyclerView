@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.fcott.xformerrecyclerview.transformer.PageTransformer;
@@ -93,15 +92,23 @@ public class XformerRecyclerView extends RecyclerView {
                 if(child == null)continue;
                 final float transformPos = (float) ((child.getLeft()+child.getRight())/2 - scrollX) / (getMeasuredWidth() - getPaddingLeft() - getPaddingRight())-0.5f;
                 final float intervalPercent = (float) (child.getMeasuredWidth()+child.getPaddingLeft()+child.getPaddingRight()) / (getMeasuredWidth() - getPaddingLeft() - getPaddingRight());
-                mPageTransformer.transformPage(child,intervalPercent * 2, transformPos * 2);
+                mPageTransformer.transformPage(child,intervalPercent * 2, transformPos * 2);//都乘2，比例不变，便于计算
             }
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+        if(getChildAt(0) != null){
+            View view = getChildAt(0);
+            int position = getLayoutManager().getPosition(view);
         }
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         super.onMeasure(widthSpec, heightSpec);
-        Log.w("onMeasure","onMeasure");
 
         if(getChildAt(0) != null && PageCenterHelper.itemWidth == 0){
             PageCenterHelper.parentWidth = MeasureSpec.getSize(widthSpec);

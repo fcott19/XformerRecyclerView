@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.iv.setImageResource(R.mipmap.ic_launcher);
             PageCenterHelper.onBindViewHolder(holder.itemView, position, getItemCount());//帮助第一页和最后一页居中
+            holder.iv.setImageResource(R.mipmap.ic_launcher);
         }
 
         @Override
