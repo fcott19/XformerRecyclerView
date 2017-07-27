@@ -2,7 +2,6 @@ package com.fcott.xformerrecyclerview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,9 +15,17 @@ import com.fcott.xformerrecyclerview.transformer.PageTransformer;
 public class XformerRecyclerView extends RecyclerView {
     private static final int FLING_MAX_VELOCITY = 8000; // 默认最大瞬时滑动速度
 
-    private FixLinearSnapHelper mLinearSnapHelper = new FixLinearSnapHelper();
-    private PageTransformer mPageTransformer;
+    private FixLinearSnapHelper mLinearSnapHelper = new FixLinearSnapHelper();//居中滑动
+    private PageTransformer mPageTransformer;//动画控制器
     private int flingMaxVelocity = FLING_MAX_VELOCITY;
+    private int normalLeftMargin = 0;//item的默认leftmargin
+    private int normalRightMargin = 0;
+    private int normalTopMargin = 0;
+    private int normalBottomMargin = 0;
+    private int itemWidth = 0;//item宽度
+    private int itemHeight = 0;//item高度
+    private int mWidth = 0;//XformerRecyclerView宽度
+    private int mHeight = 0;//XformerRecyclerView高度
 
     public XformerRecyclerView(Context context) {
         this(context,null);
@@ -30,7 +37,6 @@ public class XformerRecyclerView extends RecyclerView {
 
     public XformerRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        super.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
     }
 
     /**
@@ -39,15 +45,6 @@ public class XformerRecyclerView extends RecyclerView {
      */
     public void setFlingMaxVelocity(int flingMaxVelocity){
         this.flingMaxVelocity = flingMaxVelocity;
-    }
-
-    /**
-     * 只能横向滑动
-     * @param layout
-     */
-    @Override
-    public void setLayoutManager(LayoutManager layout) {
-        return;
     }
 
     /**
@@ -88,7 +85,7 @@ public class XformerRecyclerView extends RecyclerView {
                 final View child = getLayoutManager().findViewByPosition(i);
                 if(child == null)continue;
 
-                makeEdgeItemCenter(child);//根据tem的位置添加不同的margin
+                measureItemMargin(child);//根据tem的位置添加不同的margin
 
                 float transformPos;
                 float intervalPercent;
@@ -124,30 +121,25 @@ public class XformerRecyclerView extends RecyclerView {
                 normalRightMargin = lp.rightMargin;
                 normalTopMargin = lp.topMargin;
                 normalBottomMargin = lp.bottomMargin;
-                makeEdgeItemCenter(child);
+                measureItemMargin(child);
                 mLinearSnapHelper.attachToRecyclerView(this);
             }
         }
     }
 
-    private int normalLeftMargin = 0;
-    private int normalRightMargin = 0;
-    private int normalTopMargin = 0;
-    private int normalBottomMargin = 0;
-    private int itemWidth = 0;
-    private int itemHeight = 0;
-    private int mWidth = 0;
-    private int mHeight = 0;
-
-    private void makeEdgeItemCenter(final View itemView) {
+    /**
+     * 计算每一页的margin 如果第一页和最后一页需要居中，则需要在左侧（右侧）添加margin
+     * @param itemView recycleview中的item
+     */
+    private void measureItemMargin(final View itemView) {
         if(itemWidth == 0)
             return;
 
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
-        int position = getLayoutManager().getPosition(itemView);
+        int position = getLayoutManager().getPosition(itemView);//根据item确定位置
 
         if (position == 0) {
-            if(getLayoutManager().canScrollHorizontally()){
+            if(getLayoutManager().canScrollHorizontally()){//水平方向第一页，在左侧添加margin 使其居中
                 int leftMargin = (mWidth - itemWidth + normalLeftMargin - normalRightMargin) / 2 ;
                 lp.setMargins(leftMargin, normalTopMargin, normalRightMargin, normalBottomMargin);
             }else {

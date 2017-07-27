@@ -81,6 +81,13 @@ public class FixLinearSnapHelper extends LinearSnapHelper {
         return null;
     }
 
+    /**
+     * 寻找离屏幕中心最近的childview 因为第一页和最后一页需要居中 前面在（以水平方向第一页为例）左侧添加了margin
+     * 现在计算childview的宽度时，应把添加上去的margin去掉
+     * @param layoutManager
+     * @param helper
+     * @return
+     */
     private View findCenterView(RecyclerView.LayoutManager layoutManager,
                                 OrientationHelper helper) {
         int childCount = layoutManager.getChildCount();
@@ -101,20 +108,20 @@ public class FixLinearSnapHelper extends LinearSnapHelper {
             final View child = layoutManager.getChildAt(i);
             int childCenter = helper.getDecoratedStart(child) +
                     (helper.getDecoratedMeasurement(child) / 2);
-            if(i == 0){
+            if(i == 0){//首页
                 int margin;
-                if(layoutManager.canScrollHorizontally()){
+                if(layoutManager.canScrollHorizontally()){//计算水平方向第一页在左侧的margin
                     margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).leftMargin;
-                }else {
+                }else {//计算水垂直向第一页在上侧的margin
                     margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).topMargin;
                 }
                 childCenter = helper.getDecoratedStart(child) + margin + (helper.getDecoratedMeasurement(child)-margin)/2;
 
-            }else if(i == childCount - 1){
+            }else if(i == childCount - 1){//尾页
                 int margin;
-                if(layoutManager.canScrollHorizontally()){
+                if(layoutManager.canScrollHorizontally()){//计算水平方向最后一页在右侧的margin
                     margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).rightMargin;
-                }else {
+                }else {//计算垂直方向最后一页在下侧的margin
                     margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).bottomMargin;
                 }
                 childCenter = helper.getDecoratedStart(child) + (helper.getDecoratedMeasurement(child)-margin)/2;

@@ -2,6 +2,7 @@ package com.fcott.xformerrecyclerview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = (XformerRecyclerView) this.findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new MyAdapter());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setPageTransformer(new DepthPageTransformer());
     }
 
