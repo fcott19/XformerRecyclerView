@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.fcott.xformerrecyclerview.transformer.SnapPageTransformer;
+import com.fcott.xformerrecyclerview.transformer.DepthPageTransformer;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = (XformerRecyclerView) this.findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new MyAdapter());
-        recyclerView.setPageTransformer(new SnapPageTransformer());
+        recyclerView.setPageTransformer(new DepthPageTransformer());
     }
 
 
@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            PageCenterHelper.onBindViewHolder(holder.itemView, position, getItemCount());//帮助第一页和最后一页居中
             holder.iv.setImageResource(R.mipmap.ic_launcher);
         }
 

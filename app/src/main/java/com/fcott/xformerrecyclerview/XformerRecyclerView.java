@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.fcott.xformerrecyclerview.transformer.PageTransformer;
 
@@ -29,8 +30,7 @@ public class XformerRecyclerView extends RecyclerView {
 
     public XformerRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        super.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        mLinearSnapHelper.attachToRecyclerView(this);
+        super.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
     }
 
     /**
@@ -82,39 +82,89 @@ public class XformerRecyclerView extends RecyclerView {
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
-
         if (mPageTransformer != null) {
-            final int scrollX = getScrollX();
             final int childCount = getAdapter().getItemCount();
             for (int i = 0; i < childCount; i++) {
                 final View child = getLayoutManager().findViewByPosition(i);
-
                 if(child == null)continue;
-                final float transformPos = (float) ((child.getLeft()+child.getRight())/2 - scrollX) / (getMeasuredWidth() - getPaddingLeft() - getPaddingRight())-0.5f;
-                final float intervalPercent = (float) (child.getMeasuredWidth()+child.getPaddingLeft()+child.getPaddingRight()) / (getMeasuredWidth() - getPaddingLeft() - getPaddingRight());
+
+                makeEdgeItemCenter(child);//根据tem的位置添加不同的margin
+
+                float transformPos;
+                float intervalPercent;
+                if (getLayoutManager().canScrollHorizontally()) {
+                    transformPos = (float) ((child.getLeft()+child.getRight())/2 - getScrollX()) / (getMeasuredWidth() - getPaddingLeft() - getPaddingRight())-0.5f;
+                    intervalPercent = (float) (child.getMeasuredWidth()+child.getPaddingLeft()+child.getPaddingRight()) / (getMeasuredWidth() - getPaddingLeft() - getPaddingRight());
+                } else {
+                    transformPos = (float) ((child.getTop()+child.getBottom())/2 - getScrollY()) / (getMeasuredHeight() - getPaddingTop() - getPaddingBottom())-0.5f;
+                    intervalPercent = (float) (child.getMeasuredHeight()+child.getPaddingTop()+child.getPaddingBottom()) / (getMeasuredHeight() - getPaddingTop() - getPaddingBottom());
+                }
                 mPageTransformer.transformPage(child,intervalPercent * 2, transformPos * 2);//都乘2，比例不变，便于计算
             }
         }
     }
 
     @Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-        if(getChildAt(0) != null){
-            View view = getChildAt(0);
-            int position = getLayoutManager().getPosition(view);
-        }
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mWidth = w;
+        mHeight = h;
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         super.onMeasure(widthSpec, heightSpec);
-
-        if(getChildAt(0) != null && PageCenterHelper.itemWidth == 0){
-            PageCenterHelper.parentWidth = MeasureSpec.getSize(widthSpec);
-            PageCenterHelper.itemWidth = getChildAt(0).getWidth();
-            getAdapter().notifyDataSetChanged();
+        if(getChildAt(0) != null && itemWidth == 0){
+            View child = getChildAt(0);
+            itemWidth = child.getWidth();
+            itemHeight = child.getHeight();
+            if(getLayoutManager().getPosition(child) == 0){
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
+                normalLeftMargin = lp.leftMargin;
+                normalRightMargin = lp.rightMargin;
+                normalTopMargin = lp.topMargin;
+                normalBottomMargin = lp.bottomMargin;
+                makeEdgeItemCenter(child);
+                mLinearSnapHelper.attachToRecyclerView(this);
+            }
         }
     }
 
+    private int normalLeftMargin = 0;
+    private int normalRightMargin = 0;
+    private int normalTopMargin = 0;
+    private int normalBottomMargin = 0;
+    private int itemWidth = 0;
+    private int itemHeight = 0;
+    private int mWidth = 0;
+    private int mHeight = 0;
+
+    private void makeEdgeItemCenter(final View itemView) {
+        if(itemWidth == 0)
+            return;
+
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) itemView.getLayoutParams();
+        int position = getLayoutManager().getPosition(itemView);
+
+        if (position == 0) {
+            if(getLayoutManager().canScrollHorizontally()){
+                int leftMargin = (mWidth - itemWidth + normalLeftMargin - normalRightMargin) / 2 ;
+                lp.setMargins(leftMargin, normalTopMargin, normalRightMargin, normalBottomMargin);
+            }else {
+                int topMargin = (mHeight - itemHeight + normalTopMargin - normalBottomMargin) / 2 ;
+                lp.setMargins(normalRightMargin, topMargin, normalRightMargin, normalBottomMargin);
+            }
+        } else if (position == getAdapter().getItemCount() - 1) {
+            if(getLayoutManager().canScrollHorizontally()){
+                int rightMargin = (mWidth - itemWidth + normalRightMargin - normalLeftMargin) / 2 ;
+                lp.setMargins(normalLeftMargin, normalTopMargin, rightMargin, normalBottomMargin);
+            }else {
+                int bottomMargin = (mHeight - itemHeight + normalBottomMargin - normalTopMargin) / 2 ;
+                lp.setMargins(normalLeftMargin, normalTopMargin, normalRightMargin, bottomMargin);
+            }
+        } else {
+            lp.setMargins(normalLeftMargin, normalTopMargin, normalRightMargin, normalBottomMargin);
+        }
+        itemView.setLayoutParams(lp);
+    }
 }

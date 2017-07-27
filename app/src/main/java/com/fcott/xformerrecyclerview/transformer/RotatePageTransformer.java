@@ -6,7 +6,7 @@ import android.view.View;
  * Created by fcott on 2017/7/25.
  */
 
-public class RotateDownPageTransformer implements PageTransformer {
+public class RotatePageTransformer implements PageTransformer {
     private float mRot;
     private  float rotMax = 20.0f;
     @Override
@@ -29,7 +29,7 @@ public class RotateDownPageTransformer implements PageTransformer {
         }
     }
 
-    public RotateDownPageTransformer setRotMax(float rotMax) {
+    public RotatePageTransformer setRotMax(float rotMax) {
         this.rotMax = rotMax;
         return this;
     }

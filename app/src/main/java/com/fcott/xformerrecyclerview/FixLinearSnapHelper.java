@@ -102,10 +102,21 @@ public class FixLinearSnapHelper extends LinearSnapHelper {
             int childCenter = helper.getDecoratedStart(child) +
                     (helper.getDecoratedMeasurement(child) / 2);
             if(i == 0){
-                int margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).getMarginStart();
+                int margin;
+                if(layoutManager.canScrollHorizontally()){
+                    margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).leftMargin;
+                }else {
+                    margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).topMargin;
+                }
                 childCenter = helper.getDecoratedStart(child) + margin + (helper.getDecoratedMeasurement(child)-margin)/2;
+
             }else if(i == childCount - 1){
-                int margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).getMarginEnd();
+                int margin;
+                if(layoutManager.canScrollHorizontally()){
+                    margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).rightMargin;
+                }else {
+                    margin = ((ViewGroup.MarginLayoutParams)child.getLayoutParams()).bottomMargin;
+                }
                 childCenter = helper.getDecoratedStart(child) + (helper.getDecoratedMeasurement(child)-margin)/2;
             }
             int absDistance = Math.abs(childCenter - center);
@@ -118,4 +129,5 @@ public class FixLinearSnapHelper extends LinearSnapHelper {
         }
         return closestChild;
     }
+
 }
