@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">XformerRecyclerView</string>
+    <string name="str_snap">SnapPageTransformer</string>
+    <string name="str_depth">DepthPageTransformer</string>
+    <string name="str_rotate">RotatePageTransformer</string>
 </resources>

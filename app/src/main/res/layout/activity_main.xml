@@ -6,8 +6,32 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.fcott.xformerrecyclerview.MainActivity">
 
+    <RadioGroup
+        android:id="@+id/rg"
+        android:background="#1122"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rb_snap"
+            android:checked="true"
+            android:text="@string/str_snap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rb_rotate"
+            android:text="@string/str_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rb_depth"
+            android:text="@string/str_depth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
     <com.fcott.xformerrecyclerview.XformerRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

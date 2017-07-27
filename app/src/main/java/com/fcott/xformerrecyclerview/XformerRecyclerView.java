@@ -96,6 +96,15 @@ public class XformerRecyclerView extends RecyclerView {
                     transformPos = (float) ((child.getTop()+child.getBottom())/2 - getScrollY()) / (getMeasuredHeight() - getPaddingTop() - getPaddingBottom())-0.5f;
                     intervalPercent = (float) (child.getMeasuredHeight()+child.getPaddingTop()+child.getPaddingBottom()) / (getMeasuredHeight() - getPaddingTop() - getPaddingBottom());
                 }
+                //先恢复原状，再变形 避免切换动画模式后childview错乱
+                child.setScaleX(1);
+                child.setScaleY(1);
+                child.setAlpha(1);
+                child.setRotation(0);
+                child.setTranslationX(0);
+                child.setTranslationY(0);
+                child.setTranslationZ(0);
+
                 mPageTransformer.transformPage(child,intervalPercent * 2, transformPos * 2);//都乘2，比例不变，便于计算
             }
         }
